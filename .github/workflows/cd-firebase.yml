@@ -1,4 +1,4 @@
-name: CD (production)
+name: CD (firebase)
 on:
   push:
     branches:

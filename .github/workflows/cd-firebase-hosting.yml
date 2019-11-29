@@ -1,4 +1,4 @@
-name: CD (staging:hosting)
+name: CD (firebase:hosting)
 on:
   push:
     branches:

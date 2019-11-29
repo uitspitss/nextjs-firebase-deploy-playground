@@ -35,7 +35,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           zeit-token: ${{ secrets.ZEIT_TOKEN }}
-          now-args: "--prod"
+          # now-args: "--prod"
           # zeit-team-id: team_XXXXXXXXXXX
 
       - name: Slack notification

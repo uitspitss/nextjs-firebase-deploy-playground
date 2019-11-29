@@ -2,7 +2,7 @@ name: CD (now)
 on:
   push:
     branches:
-      # - master
+      - master
       - feature/now
 
 jobs:

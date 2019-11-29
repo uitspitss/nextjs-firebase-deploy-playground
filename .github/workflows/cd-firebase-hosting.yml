@@ -34,7 +34,7 @@ jobs:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
-      - name: Deploy to staging only hosting
+      - name: Deploy to only hosting
         uses: w9jds/firebase-action@master
         if: success()
         env:

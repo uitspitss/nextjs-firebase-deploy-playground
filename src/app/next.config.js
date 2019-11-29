@@ -1,3 +1,4 @@
 module.exports = {
-  distDir: '../../dist/functions/next',
-}
+  distDir: process.env.NOW ? "../../.next" : "../../dist/functions/next",
+  target: process.env.NOW ? "serverless" : ""
+};

@@ -1,0 +1,48 @@
+name: CD (now)
+on:
+  push:
+    branches:
+      # - master
+      - feature/now
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install
+        run: yarn install
+
+      - name: Deploy to ZEIT now
+        uses: amondnet/now-deployment@v1
+        if: success()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          zeit-token: ${{ secrets.ZEIT_TOKEN }}
+          # now-args: "--prod"
+          # zeit-team-id: team_XXXXXXXXXXX
+
+      - name: Slack notification
+        uses: 8398a7/action-slack@v2
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}

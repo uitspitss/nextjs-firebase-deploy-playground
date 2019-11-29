@@ -29,12 +29,6 @@ jobs:
       - name: Install
         run: yarn install
 
-      - name: Build
-        run: yarn predeploy
-        env:
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-
       - name: Deploy to ZEIT now
         uses: amondnet/now-deployment@v1
         if: success()

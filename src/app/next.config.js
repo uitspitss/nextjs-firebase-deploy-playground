@@ -1,4 +1,10 @@
-module.exports = {
-  distDir: process.env.NOW ? "../../.next" : "../../dist/functions/next",
-  target: process.env.NOW ? "serverless" : ""
-};
+if (process.env.NOW) {
+  module.exports = {
+    distDir: "../../.next",
+    target: "serverless"
+  };
+} else {
+  module.exports = {
+    distDir: "../../dist/functions/next"
+  };
+}

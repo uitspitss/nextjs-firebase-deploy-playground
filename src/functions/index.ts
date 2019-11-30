@@ -2,9 +2,9 @@ import path from "path";
 import * as functions from "firebase-functions";
 import next from "next";
 
-// const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== "production";
 const app = next({
-  dev: false,
+  dev,
   conf: { distDir: `${path.relative(process.cwd(), __dirname)}/next` }
 });
 const handle = app.getRequestHandler();

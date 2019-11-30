@@ -10,7 +10,7 @@
     "preserve": "npm run build-public && npm run build-functions && npm run build-app && npm run copy-deps && npm run install-deps",
     "build": "cross-env NOW=true next build \"src/app\"",
     "serve": "cross-env NODE_ENV=production firebase emulators:start",
-    "predeploy": "npm run build-app && npm run build-public && npm run build-functions && npm run postbuild-app && npm run copy-deps",
+    "predeploy": "npm run build-app && npm run build-public && NODE_ENV=production npm run build-functions && npm run postbuild-app && npm run copy-deps",
     "deploy": "cross-env NODE_ENV=production firebase deploy",
     "clean": "rimraf \"dist/functions\" && rimraf \"dist/public\"",
     "build-app": "next build \"src/app\"",

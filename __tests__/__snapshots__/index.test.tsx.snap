@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`With React Testing Library SnapShot Should match Snapshot 1`] = `
+<DocumentFragment>
+  <main>
+    <header>
+      <a
+        class=""
+        href="/"
+      >
+        Home
+      </a>
+      <a
+        class=""
+        href="/about"
+      >
+        About
+      </a>
+    </header>
+    <p
+      class="css-1lnatx3"
+    >
+      🚀
+    </p>
+  </main>
+</DocumentFragment>
+`;

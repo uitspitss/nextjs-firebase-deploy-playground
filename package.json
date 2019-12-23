@@ -7,6 +7,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "dev": "next src/app",
     "preserve": "npm run build-public && npm run build-functions && npm run build-app && npm run copy-deps && npm run install-deps",
     "build": "cross-env NOW=true next build \"src/app\"",

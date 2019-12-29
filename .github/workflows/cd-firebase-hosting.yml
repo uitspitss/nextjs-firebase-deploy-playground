@@ -4,8 +4,12 @@ on:
     branches:
       - feature/hosting
 
+env:
+  SITE_URL: https://nextjs-firebase-deploy-pg.web.app
+  SLACK_CHANNEL: "#develop"
+
 jobs:
-  deploy:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -28,6 +32,17 @@ jobs:
       - name: Install
         run: yarn install
 
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: yarn test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
       - name: Build
         run: yarn predeploy
         env:
@@ -43,11 +58,39 @@ jobs:
         with:
           args: deploy --only hosting
 
-      - name: Slack notification
-        uses: 8398a7/action-slack@v2
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: failure() || cancelled()
         with:
-          status: ${{ job.status }}
+          type: ${{ job.status }}
+          job_name: "*Deploy to the site*"
+          mention: "here"
+          mention_if: "failure"
+          channel: ${{ env.SLACK_CHANNEL }}
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  ping_site:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the site
+        id: hello
+        uses: srt32/uptime@master
+        with:
+          url-to-hit: ${{ env.SITE_URL}}
+          expected-statuses: "200,301"
+
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: always()
+        with:
+          type: ${{ job.status }}
+          job_name: "*Check the site*"
+          mention: "here"
+          mention_if: "failure"
+          channel: ${{ env.SLACK_CHANNEL }}
+          url: ${{ secrets.SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}

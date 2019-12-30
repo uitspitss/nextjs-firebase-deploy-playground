@@ -5,8 +5,52 @@ on:
       - master
       - feature/now
 
+env:
+  SITE_URL: https://nextjs-firebase-deploy-pg.now.sh
+  SLACK_CHANNEL: "#develop"
+
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install
+        run: yarn install
+
+      - name: Test
+        run: yarn test
+
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: failure() || cancelled()
+        with:
+          type: ${{ job.status }}
+          job_name: "*Test*"
+          mention: "here"
+          mention_if: "failure"
+          channel: ${{ env.SLACK_CHANNEL }}
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -35,14 +79,42 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           zeit-token: ${{ secrets.ZEIT_TOKEN }}
-          # now-args: "--prod"
+          now-args: "--prod"
           # zeit-team-id: team_XXXXXXXXXXX
 
-      - name: Slack notification
-        uses: 8398a7/action-slack@v2
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: failure() || cancelled()
         with:
-          status: ${{ job.status }}
+          type: ${{ job.status }}
+          job_name: "*Deploy to the site*"
+          mention: "here"
+          mention_if: "failure"
+          channel: ${{ env.SLACK_CHANNEL }}
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  ping_site:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the site
+        id: hello
+        uses: srt32/uptime@master
+        with:
+          url-to-hit: ${{ env.SITE_URL}}
+          expected-statuses: "200,301"
+
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: always()
+        with:
+          type: ${{ job.status }}
+          job_name: "*Check the site ${{ env.SITE_URL }} *"
+          mention: "here"
+          mention_if: "failure"
+          channel: ${{ env.SLACK_CHANNEL }}
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}

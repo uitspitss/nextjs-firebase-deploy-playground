@@ -116,7 +116,7 @@ jobs:
         if: always()
         with:
           type: ${{ job.status }}
-          job_name: "*Check the site $SITE_URL *"
+          job_name: "*Check the site ${{ env.SITE_URL }} *"
           mention: "here"
           mention_if: "failure"
           channel: ${{ env.SLACK_CHANNEL }}

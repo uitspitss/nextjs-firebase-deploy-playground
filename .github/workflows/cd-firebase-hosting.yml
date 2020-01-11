@@ -81,6 +81,8 @@ jobs:
       - name: Deploy to only hosting
         run: yarn firebase use --add ${{ secrets.PROJECT_ID }} && yarn deploy --only hosting
         if: success()
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Slack Notification
         uses: homoluctus/slatify@master

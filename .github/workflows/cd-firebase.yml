@@ -82,6 +82,8 @@ jobs:
       - name: Deploy to Firebase
         run: yarn firebase use --add ${{ secrets.PROJECT_ID }} && yarn deploy
         if: success()
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Slack Notification
         uses: homoluctus/slatify@master

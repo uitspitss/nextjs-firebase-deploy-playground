@@ -105,7 +105,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check the site
-        id: hello
         uses: srt32/uptime@master
         with:
           url-to-hit: ${{ env.SITE_URL}}

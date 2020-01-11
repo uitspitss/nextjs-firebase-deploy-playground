@@ -80,13 +80,8 @@ jobs:
           FIREBASE_PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        run: yarn firebase use --add ${{ secrets.PROJECT_ID }} && yarn deploy
         if: success()
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        with:
-          args: deploy
 
       - name: Slack Notification
         uses: homoluctus/slatify@master

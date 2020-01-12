@@ -74,7 +74,7 @@ jobs:
         run: yarn install
 
       - name: Deploy to ZEIT now
-        run: yarn now -token=${{ secrets.ZEIT_TOKEN }} --prod
+        run: yarn now -t ${{ secrets.ZEIT_TOKEN }} --prod
         if: success()
 
       - name: Slack Notification

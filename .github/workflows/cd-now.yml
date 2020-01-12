@@ -74,13 +74,8 @@ jobs:
         run: yarn install
 
       - name: Deploy to ZEIT now
-        uses: amondnet/now-deployment@v1
+        run: yarn now -token=${{ secrets.ZEIT_TOKEN }} --prod
         if: success()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          zeit-token: ${{ secrets.ZEIT_TOKEN }}
-          now-args: "--prod"
-          # zeit-team-id: team_XXXXXXXXXXX
 
       - name: Slack Notification
         uses: homoluctus/slatify@master

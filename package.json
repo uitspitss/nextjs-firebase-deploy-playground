@@ -53,6 +53,7 @@
     "firebase-tools": "^7.1.0",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
+    "now": "^16.7.3",
     "rimraf": "3.0.0",
     "ts-jest": "^24.2.0",
     "tslint": "^5.11.0",
